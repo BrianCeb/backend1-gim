@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
-import SidebarAdmin from '../components/SidebarAdmin';
-import AlumnoForm from '../components/AlumnoForm';
-import AlumnosList from '../components/AlumnosList';
+import React, { useState, useEffect } from 'react';
+import SidebarAdmin from '../gimnasio-app/components/SidebarAdmin';
+import AlumnoForm from '../gimnasio-app/components/AlumnoForm';
+import AlumnosList from '../components/AlumnoList';
 import AvisoPago from '../components/AvisoPago';
 
 const AlumnosPage = () => {
     const [alumnos, setAlumnos] = useState([]);
     const [editingAlumno, setEditingAlumno] = useState(null);
 
+    useEffect(() => {
+        const stored = localStorage.getItem('alumnos');
+        if (stored) {
+            setAlumnos(JSON.parse(stored));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('alumnos', JSON.stringify(alumnos));
+    }, [alumnos]);
+
     const handleAgregarAlumno = (alumno) => {
         if (editingAlumno) {
-            setAlumnos(prev => prev.map(a => a === editingAlumno ? alumno : a));
+            const updated = alumnos.map(a => a === editingAlumno ? alumno : a);
+            setAlumnos(updated);
             setEditingAlumno(null);
         } else {
             setAlumnos([...alumnos, alumno]);

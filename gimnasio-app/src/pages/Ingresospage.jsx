@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
-import SidebarAdmin from '../components/SidebarAdmin';
-import RegistroIngreso from '../components/RegistroIngreso';
+import React, { useState, useEffect } from 'react';
+import SidebarAdmin from '../gimnasio-app/components/SidebarAdmin';
+import RegistroIngreso from '../src/components/RegistroIngreso';
 
 const IngresosPage = () => {
     const [ingresos, setIngresos] = useState([]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('ingresos');
+        if (stored) {
+            setIngresos(JSON.parse(stored));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('ingresos', JSON.stringify(ingresos));
+    }, [ingresos]);
 
     const handleRegistrarIngreso = (nuevoIngreso) => {
         setIngresos([...ingresos, nuevoIngreso]);
