@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import SidebarAdmin from '../gimnasio-app/components/SidebarAdmin';
-import RegistroIngreso from '../src/components/RegistroIngreso';
+import SidebarAdmin from '../components/SlidebarAdmin';
+import RegistroIngreso from '../components/RegistroIngreso';
 
 const IngresosPage = () => {
     const [ingresos, setIngresos] = useState([]);

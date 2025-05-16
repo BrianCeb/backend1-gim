@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import SidebarAdmin from '../gimnasio-app/components/SidebarAdmin';
-import AlumnoForm from '../gimnasio-app/components/AlumnoForm';
+import SidebarAdmin from '../components/SlidebarAdmin';
+import AlumnoForm from '../components/AlumnosForm';
 import AlumnosList from '../components/AlumnoList';
 import AvisoPago from '../components/AvisoPago';
 
