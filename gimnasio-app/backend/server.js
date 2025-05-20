@@ -1,40 +1,41 @@
+// servidor.js
 import express from 'express';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { engine } from 'express-handlebars';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import alumnosRouter from './routes/alumnos.routes.js';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import conectarDB from './config/db.js';
+import alumnosRouter from './src/rutas/alumnos.rutas.js';
 
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer);
+
+conectarDB();
+
+dotenv.config(); // Cargar variables de entorno
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Handlebars setup
-app.engine('handlebars', engine());
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Static files
-app.use(express.static(path.join(__dirname, '../public')));
+// Conexión a MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => console.log('✅ Conectado a MongoDB Atlas'))
+    .catch((err) => console.error('❌ Error de conexión a MongoDB:', err));
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use('/api/alumnos', alumnosRouter);
 
-// Rutas
-app.use('/', alumnosRouter);
+// Servir archivos estáticos del frontend (si lo tenés)
+app.use(express.static(path.join(__dirname, '..', 'dist')));
 
-// WebSocket
-io.on('connection', socket => {
-    console.log('Cliente conectado');
-    socket.emit('alumnos', alumnos); // Enviar datos actuales al conectar
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
 });
 
-app.set('socketio', io); // Para usar en rutas si es necesario
-
-// Inicializar servidor
-httpServer.listen(3000, () => {
-    console.log('Servidor escuchando en http://localhost:3000');
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor backend corriendo en http://localhost:${PORT}`);
 });
